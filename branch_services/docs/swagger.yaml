@@ -1,0 +1,108 @@
+basePath: /
+definitions:
+  requests.OrderReport:
+    properties:
+      branch_id:
+        type: integer
+      price:
+        type: number
+      product_id:
+        type: integer
+      qty:
+        type: integer
+      total:
+        type: number
+    type: object
+  responses.InternalServerErrorResponse:
+    properties:
+      code:
+        example: 500
+        type: integer
+        x-order: "1"
+      error:
+        properties:
+          field:
+            type: object
+            x-order: "1"
+          message:
+            example: internal server error
+            type: string
+            x-order: "0"
+        type: object
+        x-order: "2"
+      status:
+        example: false
+        type: boolean
+        x-order: "0"
+    type: object
+  responses.Success:
+    properties:
+      code:
+        type: integer
+        x-order: "1"
+      data:
+        x-order: "2"
+      status:
+        example: true
+        type: boolean
+        x-order: "0"
+    type: object
+host: localhost:5566
+info:
+  contact: {}
+  description: Example Branch Service
+  title: POS Test
+  version: "1.0"
+paths:
+  /api/branch/{branch_id}/products:
+    get:
+      description: 2.1 GET /products – แสดงข้อมูลสินค้าทั้งหมดของสาขา
+      operationId: BranchProduct
+      parameters:
+      - description: ID สาขา
+        in: path
+        name: branch_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Success'
+        "409":
+          description: Conflict Error
+        "422":
+          description: Entity Error
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErrorResponse'
+      tags:
+      - Branch Services
+  /api/branch/orders:
+    post:
+      description: 2.2 POST /orders – ทำรายการขายสินค้า
+      operationId: CreateOrder
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/requests.OrderReport'
+      responses:
+        "201":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Success'
+        "409":
+          description: Conflict Error
+        "422":
+          description: Entity Error
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErrorResponse'
+      tags:
+      - Branch Services
+swagger: "2.0"
