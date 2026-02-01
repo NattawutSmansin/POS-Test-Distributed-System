@@ -1,0 +1,232 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Example Core Service",
+        "title": "POS Test",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:3344",
+    "basePath": "/",
+    "paths": {
+        "/api/core/orders": {
+            "get": {
+                "description": "1.2 GET /orders – รายงานยอดขาย",
+                "tags": [
+                    "Core Services"
+                ],
+                "operationId": "Order",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Success"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict Error"
+                    },
+                    "422": {
+                        "description": "Entity Error"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/core/products": {
+            "put": {
+                "description": "3.1 การส่งข้อมูลจาก Core ไปยัง Branch การอัปเดตราคาสินค้าให้ทุกสาขาพร้อมกัน",
+                "tags": [
+                    "Core Services"
+                ],
+                "operationId": "UpdateProductPrice",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.ProductPrice"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Success"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict Error"
+                    },
+                    "422": {
+                        "description": "Entity Error"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "1.1 POST /products – สร้างสินค้าใหม่",
+                "tags": [
+                    "Core Services"
+                ],
+                "operationId": "CreateProduct",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Success"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict Error"
+                    },
+                    "422": {
+                        "description": "Entity Error"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/core/{branch_id}/products": {
+            "get": {
+                "description": "2.1 GET /products – แสดงข้อมูลสินค้าทั้งหมดของสาขา",
+                "tags": [
+                    "Core Services"
+                ],
+                "operationId": "BranchProduct",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID สาขา",
+                        "name": "branch_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Success"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict Error"
+                    },
+                    "422": {
+                        "description": "Entity Error"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "requests.Product": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "stock_qty": {
+                    "type": "integer"
+                }
+            }
+        },
+        "requests.ProductPrice": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
+        },
+        "responses.InternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean",
+                    "x-order": "0",
+                    "example": false
+                },
+                "code": {
+                    "type": "integer",
+                    "x-order": "1",
+                    "example": 500
+                },
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "message": {
+                            "type": "string",
+                            "x-order": "0",
+                            "example": "internal server error"
+                        },
+                        "field": {
+                            "type": "object",
+                            "x-order": "1"
+                        }
+                    },
+                    "x-order": "2"
+                }
+            }
+        },
+        "responses.Success": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean",
+                    "x-order": "0",
+                    "example": true
+                },
+                "code": {
+                    "type": "integer",
+                    "x-order": "1"
+                },
+                "data": {
+                    "x-order": "2"
+                }
+            }
+        }
+    }
+}

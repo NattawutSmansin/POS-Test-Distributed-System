@@ -1,0 +1,155 @@
+basePath: /
+definitions:
+  requests.Product:
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+      stock_qty:
+        type: integer
+    type: object
+  requests.ProductPrice:
+    properties:
+      id:
+        type: integer
+      price:
+        type: number
+    type: object
+  responses.InternalServerErrorResponse:
+    properties:
+      code:
+        example: 500
+        type: integer
+        x-order: "1"
+      error:
+        properties:
+          field:
+            type: object
+            x-order: "1"
+          message:
+            example: internal server error
+            type: string
+            x-order: "0"
+        type: object
+        x-order: "2"
+      status:
+        example: false
+        type: boolean
+        x-order: "0"
+    type: object
+  responses.Success:
+    properties:
+      code:
+        type: integer
+        x-order: "1"
+      data:
+        x-order: "2"
+      status:
+        example: true
+        type: boolean
+        x-order: "0"
+    type: object
+host: localhost:3344
+info:
+  contact: {}
+  description: Example Core Service
+  title: POS Test
+  version: "1.0"
+paths:
+  /api/core/{branch_id}/products:
+    get:
+      description: 2.1 GET /products – แสดงข้อมูลสินค้าทั้งหมดของสาขา
+      operationId: BranchProduct
+      parameters:
+      - description: ID สาขา
+        in: path
+        name: branch_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Success'
+        "409":
+          description: Conflict Error
+        "422":
+          description: Entity Error
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErrorResponse'
+      tags:
+      - Core Services
+  /api/core/orders:
+    get:
+      description: 1.2 GET /orders – รายงานยอดขาย
+      operationId: Order
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Success'
+        "409":
+          description: Conflict Error
+        "422":
+          description: Entity Error
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErrorResponse'
+      tags:
+      - Core Services
+  /api/core/products:
+    post:
+      description: 1.1 POST /products – สร้างสินค้าใหม่
+      operationId: CreateProduct
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/requests.Product'
+      responses:
+        "201":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Success'
+        "409":
+          description: Conflict Error
+        "422":
+          description: Entity Error
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErrorResponse'
+      tags:
+      - Core Services
+    put:
+      description: 3.1 การส่งข้อมูลจาก Core ไปยัง Branch การอัปเดตราคาสินค้าให้ทุกสาขาพร้อมกัน
+      operationId: UpdateProductPrice
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/requests.ProductPrice'
+      responses:
+        "202":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Success'
+        "409":
+          description: Conflict Error
+        "422":
+          description: Entity Error
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErrorResponse'
+      tags:
+      - Core Services
+swagger: "2.0"
